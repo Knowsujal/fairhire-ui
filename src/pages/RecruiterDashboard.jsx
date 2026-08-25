@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../config";
 
 const RecruiterDashboard = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const RecruiterDashboard = () => {
     if (!portalId) return;
     if (!silent) setRefreshing(true);
     try {
-      const res = await fetch(`http://localhost:5000/recruiter/candidates/${portalId}`);
+      const res = await fetch(`${API_URL}/recruiter/candidates/${portalId}`);
       const data = await res.json();
       setCandidates(Array.isArray(data) ? data : []);
     } catch (err) {
