@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
- 
+import { API_URL } from "../config";
+
 const CandidateLogin = () => {
   const [view, setView] = useState("login");
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
- 
+
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [regData, setRegData] = useState({ name:"", email:"", password:"", confirmPassword:"", phone:"", college:"", degree:"", skills:"" });
- 
+
   useEffect(() => { setTimeout(() => setVisible(true), 50); }, []);
- 
+
   const handleLogin = async (e) => {
     e.preventDefault(); setError(""); setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/candidate/login", {
+      const res = await fetch(`${API_URL}/candidate/login`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(loginData)
       });
@@ -27,13 +28,13 @@ const CandidateLogin = () => {
     } catch { setError("Cannot connect to server"); }
     finally { setLoading(false); }
   };
- 
+
   const handleRegister = async (e) => {
     e.preventDefault(); setError("");
     if (regData.password !== regData.confirmPassword) return setError("Passwords do not match");
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/candidate/register", {
+      const res = await fetch(`${API_URL}/candidate/register`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(regData)
       });
@@ -44,7 +45,7 @@ const CandidateLogin = () => {
     } catch { setError("Cannot connect to server"); }
     finally { setLoading(false); }
   };
- 
+
   return (
     <div style={s.root}>
       <div style={{...s.orb,...s.orb1}}/><div style={{...s.orb,...s.orb2}}/><div style={s.grid}/>
@@ -58,7 +59,7 @@ const CandidateLogin = () => {
           <button style={view==="register"?{...s.tab,...s.tabActive}:s.tab} onClick={()=>{setView("register");setError("");}}>Register</button>
         </div>
         {error && <div style={s.errorBox}>{error}</div>}
- 
+
         {view==="login" && (
           <form onSubmit={handleLogin} style={s.form}>
             <Field label="Email" type="email" placeholder="your@email.com" value={loginData.email} onChange={v=>setLoginData({...loginData,email:v})} color="#4fceae"/>
@@ -66,7 +67,7 @@ const CandidateLogin = () => {
             <Btn loading={loading} color="linear-gradient(135deg,#2f8f6f,#4fceae)">Login →</Btn>
           </form>
         )}
- 
+
         {view==="register" && (
           <form onSubmit={handleRegister} style={s.form}>
             <div style={s.row}>
@@ -98,7 +99,7 @@ const CandidateLogin = () => {
     </div>
   );
 };
- 
+
 const Field = ({label,type="text",placeholder,value,onChange,color}) => {
   const [focused,setFocused]=useState(false);
   return (
@@ -110,7 +111,7 @@ const Field = ({label,type="text",placeholder,value,onChange,color}) => {
     </div>
   );
 };
- 
+
 const Btn = ({children,loading,color}) => {
   const [hov,setHov]=useState(false);
   return (
@@ -120,7 +121,7 @@ const Btn = ({children,loading,color}) => {
     </button>
   );
 };
- 
+
 const s = {
   root:{minHeight:"100vh",background:"#0a0e1a",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",position:"relative",overflow:"hidden",padding:"2rem"},
   orb:{position:"absolute",borderRadius:"50%",filter:"blur(90px)",opacity:0.3,pointerEvents:"none"},
@@ -141,5 +142,5 @@ const s = {
   footNote:{fontSize:"0.8rem",color:"rgba(255,255,255,0.3)",textAlign:"center",marginTop:"1rem"},
   link:{color:"#4fceae",cursor:"pointer",textDecoration:"underline"},
 };
- 
+
 export default CandidateLogin;

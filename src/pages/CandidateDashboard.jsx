@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../config";
 
 // Inject keyframe animations once
 const ANIM_STYLE = `
@@ -40,7 +41,7 @@ const CandidateDashboard = () => {
   const fetchHistory = useCallback(async () => {
     if (!user) return;
     try {
-      const res = await fetch(`http://localhost:5000/candidate/history/${user.email}`);
+      const res = await fetch(`${API_URL}/candidate/history/${user.email}`);
       const data = await res.json();
       setHistory(Array.isArray(data) ? data : []);
     } catch (err) { console.error(err); }
@@ -55,7 +56,7 @@ const CandidateDashboard = () => {
     if (!portalId.trim()) return alert("Enter a Portal ID");
     setPortalLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/portal/${portalId}`);
+      const res = await fetch(`${API_URL}/portal/${portalId}`);
       const data = await res.json();
       if (data.valid) { setPortalValid(true); setJobTitle(data.jobTitle); }
       else alert("❌ Invalid Portal ID");
@@ -73,7 +74,7 @@ const CandidateDashboard = () => {
       formData.append("candidateEmail", user.email);
       formData.append("portalId", portalId);
       formData.append("resume", resume);
-      const res = await fetch("http://localhost:5000/analyze-v2", { method: "POST", body: formData });
+      const res = await fetch(`${API_URL}/analyze-v2`, { method: "POST", body: formData });
       if (!res.ok) throw new Error(`Error: ${res.status}`);
       const data = await res.json();
       setResult(data);
